@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "185745101239",
+    "project_id": "trackerneverlost",
+    "storage_bucket": "trackerneverlost.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:185745101239:android:bc4b326bc2f61ac1055832",
+        "android_client_info": {
+          "package_name": "com.example.tracker1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "185745101239-do3rp4gckp61e7oiqqv7cp2qbos9v7s7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIhyqmlfXt_8nY0ogrtKhXeUhtRYku6J0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "185745101239-do3rp4gckp61e7oiqqv7cp2qbos9v7s7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

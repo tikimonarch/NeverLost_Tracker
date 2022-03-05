@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "185745101239",
+    "firebase_url": "https://trackerneverlost-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "trackerneverlost",
     "storage_bucket": "trackerneverlost.appspot.com"
   },
@@ -13,6 +14,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "185745101239-75qmdbsvq1ou22gs7eh1f9b817d0q7h6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tracker1",
+            "certificate_hash": "554e8e3959ee170ff3d923de534f285de7649978"
+          }
+        },
         {
           "client_id": "185745101239-do3rp4gckp61e7oiqqv7cp2qbos9v7s7.apps.googleusercontent.com",
           "client_type": 3

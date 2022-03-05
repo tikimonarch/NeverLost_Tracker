@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class User {
     private String uid,email;
-    private HashMap<String,User> acceptList;
+    private HashMap<String,User> acceptList; // List user's friend
 
     public User(){
     }

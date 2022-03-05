@@ -14,14 +14,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.tracker1.Model.User;
 import com.firebase.ui.auth.AuthUI;
 import com.example.tracker1.Util.Common;
+import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -50,9 +55,10 @@ public class MainActivity extends AppCompatActivity {
 
     DatabaseReference user_information;
     //private static final int MY_REQUEST_CODE = 3102; //custom number
-    List<IdpConfig> providers;
+    List<AuthUI.IdpConfig> providers;
+    //private static final String TAG = "DebugLogIn";
 
-    ActivityResultLauncher<Intent> activityResultLauncher =
+    private ActivityResultLauncher<Intent> activityResultLauncher =
             registerForActivityResult(
                     new ActivityResultContracts.StartActivityForResult(),
                     new ActivityResultCallback<ActivityResult>() {
@@ -64,13 +70,14 @@ public class MainActivity extends AppCompatActivity {
                             if (resultCode == RESULT_OK)
                             {
                                 FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                                //Check if user exists on Database
                                 user_information.orderByKey()
                                         .equalTo(firebaseUser.getUid())
                                         .addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                if (snapshot.getValue() == null){
-                                                    if(!snapshot.child(firebaseUser.getUid()).exists())
+                                                if (snapshot.getValue() == null){//If User does not exist
+                                                    if(!snapshot.child(firebaseUser.getUid()).exists()) //if key uid does not exist
                                                     {
                                                         Common.loggedUser= new User(firebaseUser.getUid(),firebaseUser.getEmail());
                                                         //Add to database
@@ -78,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
                                                                 .setValue(Common.loggedUser);
                                                     }
                                                 }
-                                                else
+                                                else //if user is available
                                                 {
                                                     Common.loggedUser = snapshot.child(firebaseUser.getUid()).getValue(User.class);
                                                 }
@@ -95,6 +102,23 @@ public class MainActivity extends AppCompatActivity {
                                             }
                                         });
                             }
+//                            else {
+//                                // Sign in failed
+//                                if (response == null) {
+//                                    // User pressed back button
+//                                    showSnackbar("Sign in cancelled.");
+//                                    return;
+//                                }
+//
+//                                if (response.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
+//                                    showSnackbar("No internet connection.");
+//                                    return;
+//                                }
+//
+//                                showSnackbar("Unknown error.");
+//                                Log.e(TAG, "Sign-in error: ", response.getError());
+//                            }
+
                         }
                     }
 
@@ -104,15 +128,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        FirebaseApp.initializeApp(this);
         Paper.init(this);
 
         //Init firebase
+        //rebuild if reference is not correct, check google-service
         user_information = FirebaseDatabase.getInstance().getReference(Common.USER_INFORMATION);
-
         //Init providers
         providers = Arrays.asList(
-                new IdpConfig.EmailBuilder().build(),
-                new IdpConfig.GoogleBuilder().build()
+                new AuthUI.IdpConfig.EmailBuilder().build(),
+                new AuthUI.IdpConfig.GoogleBuilder().build()
         );
 
         //Request permission of location
@@ -121,12 +146,7 @@ public class MainActivity extends AppCompatActivity {
                 .withListener(new PermissionListener() {
                     @Override
                     public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
-                        activityResultLauncher.launch(
-                                AuthUI.getInstance()
-                                        .createSignInIntentBuilder()
-                                        .setAvailableProviders(providers)
-                                        .build());
-                        //showSignInOptions();
+                        startSignInOptions(); //original
                     }
 
                     @Override
@@ -140,21 +160,23 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }).check();
     }
-
-    private void showSignInOptions() {
+    //Original
+    private void startSignInOptions() {
         //TAKE NOTE!!!!!!!!!
-
-        /*activityResultLauncher.launch(
+        activityResultLauncher.launch(
                 AuthUI.getInstance()
-                .createSignInIntentBuilder()
-                .setAvailableProviders(providers)
-                .build());*/
+                        .createSignInIntentBuilder()
+                        .setAvailableProviders(providers)
+                        //.setIsSmartLockEnabled(!BuildConfig.DEBUG /* credentials */, true /* hints */)
+                        .build());
         /*startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
                         .setAvailableProviders(providers)
                         .build(), MY_REQUEST_CODE);*/
     }
+
+
 
 /*    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -165,6 +187,7 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK)
             {
                 FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                //Check if user exists on Database
                 user_information.orderByKey()
                         .equalTo(firebaseUser.getUid())
                         .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -209,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
         DatabaseReference tokens = FirebaseDatabase.getInstance()
                 .getReference(Common.TOKENS);
 
-        //get Token
+        //get Token (New)
         FirebaseMessaging.getInstance().getToken()
                 .addOnSuccessListener(new OnSuccessListener<String>() {
             @Override

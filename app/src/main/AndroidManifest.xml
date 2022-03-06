@@ -13,14 +13,16 @@
         android:roundIcon="@mipmap/app_logo_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Tracker1">
+        <activity
+            android:name=".BuddyRequestActivity"
+            android:exported="false" />
+
         <service
             android:name=".Service.MyFCMService"
-            android:exported="true"
-            >
+            android:exported="true">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
-
         </service>
 
         <activity

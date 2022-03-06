@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
+import android.widget.TextView;
 
+import com.example.tracker1.Util.Common;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
@@ -61,7 +63,7 @@ public class HomeActivity extends AppCompatActivity {
                         if (id == R.id.nav_find_people) {
                             startActivity(new Intent(HomeActivity.this,AllPeopleActivity.class));
                         } else if (id == R.id.nav_add_people) {
-
+                            startActivity(new Intent(HomeActivity.this,BuddyRequestActivity.class));
                         } else if (id == R.id.nav_sign_out) {
 
                         }
@@ -72,6 +74,10 @@ public class HomeActivity extends AppCompatActivity {
                     }
                 }
         );
+
+        View headerView = navigationView.getHeaderView(0);
+        TextView txt_user_logged = (TextView)headerView.findViewById(R.id.txt_logged_email);
+        txt_user_logged.setText(Common.loggedUser.getEmail());
     }
 
     @Override

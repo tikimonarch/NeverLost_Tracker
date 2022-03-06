@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
+import com.example.tracker1.Model.User;
 import com.example.tracker1.R;
 import com.example.tracker1.Util.Common;
 import com.example.tracker1.Util.NotificationHelper;
@@ -38,7 +39,24 @@ public class MyFCMService extends FirebaseMessagingService {
                 sendNotificationWithChannel(remoteMessage);
             else
                 sendNotification(remoteMessage);
+
+            addRequestToUserInformation(remoteMessage.getData());
         }
+    }
+
+    private void addRequestToUserInformation(Map<String, String> data) {
+        //Pending request
+        DatabaseReference buddy_request = FirebaseDatabase.getInstance()
+                .getReference(Common.USER_INFORMATION)
+                .child(data.get(Common.TO_UID))
+                .child(Common.FRIEND_REQUEST);
+
+        User user = new User();
+        user.setUid(data.get(Common.FROM_UID));
+        user.setEmail(data.get(Common.FROM_NAME));
+
+        buddy_request.child(user.getUid()).setValue(user);
+
     }
 
     private void sendNotification(RemoteMessage remoteMessage) {

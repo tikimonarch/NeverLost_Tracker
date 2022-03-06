@@ -49,7 +49,7 @@ import io.reactivex.rxjava3.functions.Consumer;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class AllPeopleActivity extends AppCompatActivity implements IFirebaseLoadDone {
-    private static final String TAG = "DebugReq";
+    //private static final String TAG = "DebugReq";
     FirebaseRecyclerAdapter<User, UserViewHolder> adapter, searchAdapter;
     RecyclerView recycler_all_user;
     IFirebaseLoadDone firebaseLoadDone;
@@ -192,7 +192,7 @@ public class AllPeopleActivity extends AppCompatActivity implements IFirebaseLoa
 
     }
 
-    private void showDialogRequest(User model) {
+    private void showDialogRequest(final User model) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this,R.style.MyRequestDialog);
         alertDialog.setTitle("Request Buddy");
         alertDialog.setMessage("Do you want to send a buddy request to "+model.getEmail());
@@ -238,10 +238,9 @@ public class AllPeopleActivity extends AppCompatActivity implements IFirebaseLoa
         alert.show(); //IMPORTANT
     }
 
-    private void sendFriendRequest(User model) {
+    private void sendFriendRequest(final User model) {
         //Get Token to send
         DatabaseReference tokens = FirebaseDatabase.getInstance().getReference(Common.TOKENS);
-        Log.e(TAG,"Pass 1");
         tokens.orderByKey().equalTo(model.getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -289,7 +288,6 @@ public class AllPeopleActivity extends AppCompatActivity implements IFirebaseLoa
                 });
     }
 
-    //order matters?
     @Override
     protected void onStop() {
         if(adapter!=null)

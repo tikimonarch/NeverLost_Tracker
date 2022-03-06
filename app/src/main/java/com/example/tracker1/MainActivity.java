@@ -229,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateToken(final FirebaseUser firebaseUser) {
-        DatabaseReference tokens = FirebaseDatabase.getInstance()
+        final DatabaseReference tokens = FirebaseDatabase.getInstance()
                 .getReference(Common.TOKENS);
 
         //get Token (New)

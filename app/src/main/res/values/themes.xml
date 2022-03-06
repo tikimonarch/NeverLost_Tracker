@@ -40,4 +40,8 @@
     <style name="BackgroundTheme" parent="AppTheme">
         <item name = "android:windowBackground">@drawable/bgthemeicon</item>
     </style>
+
+    <style name="MyRequestDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorPrimary">@color/black</item>
+    </style>
 </resources>

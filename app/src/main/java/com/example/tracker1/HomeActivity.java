@@ -57,7 +57,7 @@ public class HomeActivity extends AppCompatActivity {
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         //Handling navigation menu clicks here
                         int id = item.getItemId();;
-
+                        //Log.e("","");
                         if (id == R.id.nav_find_people) {
                             startActivity(new Intent(HomeActivity.this,AllPeopleActivity.class));
                         } else if (id == R.id.nav_add_people) {

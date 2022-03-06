@@ -38,6 +38,6 @@
     <style name="Theme.Tracker1.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="BackgroundTheme" parent="AppTheme">
-        <item name = "android:windowBackground">@drawable/bgtheme</item>
+        <item name = "android:windowBackground">@drawable/bgthemeicon</item>
     </style>
 </resources>

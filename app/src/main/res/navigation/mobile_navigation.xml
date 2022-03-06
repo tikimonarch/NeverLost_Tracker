@@ -8,18 +8,18 @@
     <fragment
         android:id="@+id/nav_home"
         android:name="com.example.tracker1.ui.home.HomeFragment"
-        android:label="@string/menu_home"
+        android:label="@string/find_people"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/nav_gallery"
         android:name="com.example.tracker1.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
+        android:label="@string/add_people"
         tools:layout="@layout/fragment_gallery" />
 
     <fragment
         android:id="@+id/nav_slideshow"
         android:name="com.example.tracker1.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
+        android:label="@string/sign_out"
         tools:layout="@layout/fragment_slideshow" />
 </navigation>

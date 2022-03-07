@@ -25,6 +25,6 @@ public class UserViewHolder extends RecyclerView.ViewHolder implements View.OnCl
 
     @Override
     public void onClick(View view) {
-        iRecyclerItemClickListener.onItemClickListener(view,getBindingAdapterPosition()); //new
+        iRecyclerItemClickListener.onItemClickListener(view,getAdapterPosition()); //new
     }
 }

@@ -1,7 +1,10 @@
 package com.example.tracker1;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -9,12 +12,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -27,8 +32,14 @@ import com.example.tracker1.Model.User;
 import com.example.tracker1.Remote.IFCMService;
 import com.example.tracker1.Util.Common;
 import com.example.tracker1.ViewHolder.UserViewHolder;
+import com.example.tracker1.databinding.ActivityAllPeopleBinding;
+import com.example.tracker1.databinding.ActivityBuddyRequestBinding;
+import com.example.tracker1.databinding.ActivityHomeBinding;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -51,6 +62,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class AllPeopleActivity extends AppCompatActivity implements IFirebaseLoadDone {
     //private static final String TAG = "DebugReq";
     FirebaseRecyclerAdapter<User, UserViewHolder> adapter, searchAdapter;
+    private ActivityAllPeopleBinding binding;
     RecyclerView recycler_all_user;
     IFirebaseLoadDone firebaseLoadDone;
 
@@ -63,7 +75,44 @@ public class AllPeopleActivity extends AppCompatActivity implements IFirebaseLoa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_all_people);
+        setContentView(R.layout.app_bar_all);
+        binding = ActivityAllPeopleBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+        setSupportActionBar(binding.appBarAll.toolbar);
+        DrawerLayout drawer = binding.drawerLayout;
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, binding.appBarAll.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
+        );
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+        NavigationView navigationView = binding.navView;
+
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        //Handling navigation menu clicks here
+                        int id = item.getItemId();
+                        ;
+                        //Log.e("","");
+                        if (id == R.id.nav_find_people) {
+                            startActivity(new Intent(AllPeopleActivity.this, AllPeopleActivity.class));
+                            finish();
+                        } else if (id == R.id.nav_home) {
+                            startActivity(new Intent(AllPeopleActivity.this, HomeActivity.class));
+                        } else if (id == R.id.nav_add_people) {
+                            startActivity(new Intent(AllPeopleActivity.this, BuddyRequestActivity.class));
+                        } else if (id == R.id.nav_sign_out) {
+
+                        }
+
+                        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                        drawer.closeDrawer(GravityCompat.START);
+                        return true;
+                    }
+                }
+        );
 
         //Init API
         ifcmService = Common.getFCMService();
@@ -130,7 +179,7 @@ public class AllPeopleActivity extends AppCompatActivity implements IFirebaseLoa
     }
 
     private void loadSearchData() {
-        List<String> lstUserEmail = new ArrayList<>();
+        final List<String> lstUserEmail = new ArrayList<>();
         DatabaseReference userList = FirebaseDatabase.getInstance()
                 .getReference(Common.USER_INFORMATION);
         userList.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -172,7 +221,11 @@ public class AllPeopleActivity extends AppCompatActivity implements IFirebaseLoa
                 holder.setiRecyclerItemClickListener(new IRecyclerItemClickListener() {
                     @Override
                     public void onItemClickListener(View view, int position) {
-                        showDialogRequest(model);
+                        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                        if(model.getEmail().equals(firebaseUser.getEmail()))
+                            Toast.makeText(AllPeopleActivity.this, "You can't add yourself as a friend!", Toast.LENGTH_SHORT).show();
+                        else
+                            showDialogRequest(model);
                     }
                 });
 
@@ -333,7 +386,11 @@ public class AllPeopleActivity extends AppCompatActivity implements IFirebaseLoa
                 holder.setiRecyclerItemClickListener(new IRecyclerItemClickListener() {
                     @Override
                     public void onItemClickListener(View view, int position) {
-                        //Implement later
+                        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                        if(model.getEmail().equals(firebaseUser.getEmail()))
+                            Toast.makeText(AllPeopleActivity.this, "You can't add yourself as a friend!", Toast.LENGTH_SHORT).show();
+                        else
+                            showDialogRequest(model);
                     }
                 });
 
@@ -361,4 +418,6 @@ public class AllPeopleActivity extends AppCompatActivity implements IFirebaseLoa
     public void onFirebaseLoadFailed(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
+
+
 }

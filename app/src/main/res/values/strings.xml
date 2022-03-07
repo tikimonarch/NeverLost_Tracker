@@ -4,8 +4,12 @@
     <string name="nav_header_title">Android Studio</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
+    <string name="navigation_drawer_open">Drawer Open</string>
+    <string name="navigation_drawer_close">Drawer Closed</string>
 
+    <string name="home">Home</string>
     <string name="find_people">Find People</string>
     <string name="add_people">Add New Buddy</string>
     <string name="sign_out">Sign Out</string>
+    <string name="title_activity_tracking">TrackingActivity</string>
 </resources>

@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.tracker1.Interface.IFirebaseLoadDone;
@@ -82,6 +83,8 @@ public class BuddyRequestActivity extends AppCompatActivity implements IFirebase
                         } else if (id == R.id.nav_add_people) {
                             startActivity(new Intent(BuddyRequestActivity.this, BuddyRequestActivity.class));
                             finish();
+                        } else if (id == R.id.nav_token) {
+                            startActivity(new Intent(BuddyRequestActivity.this, TokenActivity.class));
                         } else if (id == R.id.nav_sign_out) {
 
                         }
@@ -92,6 +95,11 @@ public class BuddyRequestActivity extends AppCompatActivity implements IFirebase
                     }
                 }
         );
+
+        View headerView = navigationView.getHeaderView(0);
+        TextView txt_user_logged = (TextView) headerView.findViewById(R.id.txt_logged_email);
+        if(Common.loggedUser != null)
+            txt_user_logged.setText(Common.loggedUser.getEmail());
 
         //Init View
         searchBar = (MaterialSearchBar) findViewById(R.id.material_search_bar);

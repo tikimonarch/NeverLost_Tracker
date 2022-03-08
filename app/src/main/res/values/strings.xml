@@ -8,6 +8,7 @@
     <string name="navigation_drawer_close">Drawer Closed</string>
 
     <string name="home">Home</string>
+    <string name="token">User Token</string>
     <string name="find_people">Find People</string>
     <string name="add_people">Add New Buddy</string>
     <string name="sign_out">Sign Out</string>

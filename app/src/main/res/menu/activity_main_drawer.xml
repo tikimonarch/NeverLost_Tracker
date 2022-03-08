@@ -19,6 +19,11 @@
             android:icon="@drawable/ic_baseline_person_add_24"
             android:title="@string/add_people" />
 
+        <item
+            android:id="@+id/nav_token"
+            android:icon="@drawable/ic_baseline_developer_board_24"
+            android:title="@string/token" />
+
     </group>
     <item android:title="System">
         <menu>

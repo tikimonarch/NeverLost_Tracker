@@ -22,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.tracker1.Interface.IFirebaseLoadDone;
@@ -103,6 +104,8 @@ public class AllPeopleActivity extends AppCompatActivity implements IFirebaseLoa
                             startActivity(new Intent(AllPeopleActivity.this, HomeActivity.class));
                         } else if (id == R.id.nav_add_people) {
                             startActivity(new Intent(AllPeopleActivity.this, BuddyRequestActivity.class));
+                        } else if (id == R.id.nav_token) {
+                            startActivity(new Intent(AllPeopleActivity.this, TokenActivity.class));
                         } else if (id == R.id.nav_sign_out) {
 
                         }
@@ -113,6 +116,11 @@ public class AllPeopleActivity extends AppCompatActivity implements IFirebaseLoa
                     }
                 }
         );
+
+        View headerView = navigationView.getHeaderView(0);
+        TextView txt_user_logged = (TextView) headerView.findViewById(R.id.txt_logged_email);
+        if(Common.loggedUser != null)
+            txt_user_logged.setText(Common.loggedUser.getEmail());
 
         //Init API
         ifcmService = Common.getFCMService();
@@ -270,7 +278,7 @@ public class AllPeopleActivity extends AppCompatActivity implements IFirebaseLoa
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                if(snapshot.getValue() == null) //If not friends yet
+                                if(snapshot.getValue().equals(null)) //If not friends yet
                                     sendFriendRequest(model);
                                 else
                                     Toast.makeText(AllPeopleActivity.this, "You and "+model.getEmail()+" are already friends.", Toast.LENGTH_SHORT).show();

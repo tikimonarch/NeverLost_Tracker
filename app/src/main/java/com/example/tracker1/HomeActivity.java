@@ -116,6 +116,8 @@ public class HomeActivity extends AppCompatActivity implements IFirebaseLoadDone
                             finish();
                         } else if (id == R.id.nav_add_people) {
                             startActivity(new Intent(HomeActivity.this, BuddyRequestActivity.class));
+                        } else if (id == R.id.nav_token) {
+                            startActivity(new Intent(HomeActivity.this, TokenActivity.class));
                         } else if (id == R.id.nav_sign_out) {
 
                         }
@@ -129,7 +131,7 @@ public class HomeActivity extends AppCompatActivity implements IFirebaseLoadDone
 
         View headerView = navigationView.getHeaderView(0);
         TextView txt_user_logged = (TextView) headerView.findViewById(R.id.txt_logged_email);
-        if(!Common.loggedUser.equals(null))
+        if(Common.loggedUser != null)
         txt_user_logged.setText(Common.loggedUser.getEmail());
 
         //View

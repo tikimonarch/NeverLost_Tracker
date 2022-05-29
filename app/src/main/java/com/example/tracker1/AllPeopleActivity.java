@@ -278,7 +278,7 @@ public class AllPeopleActivity extends AppCompatActivity implements IFirebaseLoa
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                if(snapshot.getValue().equals(null)) //If not friends yet
+                                if(snapshot.getValue() == null) //If not friends yet
                                     sendFriendRequest(model);
                                 else
                                     Toast.makeText(AllPeopleActivity.this, "You and "+model.getEmail()+" are already friends.", Toast.LENGTH_SHORT).show();

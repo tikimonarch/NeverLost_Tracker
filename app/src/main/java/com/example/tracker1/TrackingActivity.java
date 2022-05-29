@@ -51,6 +51,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.maps.android.SphericalUtil;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class TrackingActivity extends AppCompatActivity implements OnMapReadyCallback, ValueEventListener, GoogleMap.OnMapLongClickListener {
@@ -70,17 +72,20 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
 
     private List<LatLng> geoList = new ArrayList<LatLng>();
     {
-        geoList.add(new LatLng(1.2984595157153607, 103.77169233683492));
-        geoList.add(new LatLng(1.296509091308428, 103.77352234872173));
+        //geoList.add(new LatLng(1.2984595157153607, 103.77169233683492));
+        geoList.add(new LatLng(1.296724, 103.772856));
         geoList.add(new LatLng(1.2983375329616014, 103.77500346568435));
     }
-    private final LatLng Geo1 = new LatLng(1.2984595157153607, 103.77169233683492);//E5
-    private final LatLng Geo2 = new LatLng(1.296509091308428, 103.77352234872173);//CLB
+    //private final LatLng Geo1 = new LatLng(1.2984595157153607, 103.77169233683492);//E5
+    private final LatLng Geo2 = new LatLng(1.296724, 103.772856);//CLB
     private final LatLng Geo3 = new LatLng(1.2983375329616014, 103.77500346568435);//Yusoff
     private float GEOFENCE_RADIUS = 200; //supposed to be user input
-    private long startTime = System.currentTimeMillis();
-    private long elapsedTime = 0;
-
+    private long currentTime = System.currentTimeMillis();
+    private Date notificationTime;
+    private boolean geoFlag = true;
+    private boolean notificationFlag = false;
+    private Calendar date = Calendar.getInstance();
+    public final static long SECOND_MILLIS = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,14 +157,14 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
     @Override
     protected void onPause() {
         super.onPause();
-        elapsedTime = elapsedTime + (System.currentTimeMillis() - startTime);
+        //elapsedTime = elapsedTime + (System.currentTimeMillis() - startTime);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 //        mPaused = false;
-        startTime = System.currentTimeMillis();
+        //startTime = System.currentTimeMillis();
         trackingUserLocation.addValueEventListener(this);
     }
 
@@ -199,7 +204,7 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
 //            return;
 //        }
 //        mMap.setMyLocationEnabled(true);
-        addCircle(Geo1,GEOFENCE_RADIUS);
+        //addCircle(Geo1,GEOFENCE_RADIUS);
         addCircle(Geo2,GEOFENCE_RADIUS);
         addCircle(Geo3,GEOFENCE_RADIUS);
         mMap.setOnMapLongClickListener(this);
@@ -264,19 +269,40 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
                     .snippet(Common.getDateFormatted(Common.convertTimeStampToDate(location.getTime()))));
 
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userMarker, 16f));
+            int diff = 31;
             for (LatLng geoCheck : geoList) {
                 if (!checkForGeoFenceExit(userMarker,geoCheck,GEOFENCE_RADIUS)) {
-                    startTime = System.currentTimeMillis();
-                    elapsedTime = 0;
-                }
+                    //startTime = System.currentTimeMillis();
+                    //elapsedTime = 0;
+                    notificationTime = new Date(currentTime + (1 * 60 * 1000));
+                    geoFlag = true;
+                } else {
+                    currentTime = System.currentTimeMillis();
+                    if (geoFlag == true){
+                        notificationTime = new Date(currentTime + (1 * 60 * 1000));
+                        geoFlag = false;
+                    }
 
+                }
             }
-            elapsedTime = elapsedTime + (System.currentTimeMillis() - startTime);
-            if(elapsedTime>300000){
+            diff = (int)(currentTime/SECOND_MILLIS - (notificationTime.getTime()/SECOND_MILLIS) );
+            //Log.d("Elapsed:","Passed 1");
+            //elapsedTime = elapsedTime + (System.currentTimeMillis() - startTime);
+            //Log.d("Elapsed:","time"+Long.toString(elapsedTime));
+            Log.d("Elapsed:",Integer.toString(diff));
+            if (diff < 30) {
+                notificationFlag = true;
+            } else {
+                notificationFlag = false;
+            }
+            if(notificationFlag){
                 NotificationHelper notificationHelper = new NotificationHelper(this);
-                notificationHelper.sendHighPriorityNotification("NeverLost Tracker","PLD Buddy has left the safe zone for 5 mins!", TrackingActivity.class);
-                startTime = System.currentTimeMillis();
-                elapsedTime = 0;
+                notificationHelper.sendHighPriorityNotification("NeverLost Tracker","PLD Buddy has left the safe zone!", TrackingActivity.class);
+                currentTime = System.currentTimeMillis();
+                notificationTime = new Date(currentTime + (1 * 60 * 1000));
+                //Log.d("Elapsed:","Passed 1");
+                //startTime = System.currentTimeMillis();
+                //elapsedTime = 0;
             }
         }
     }

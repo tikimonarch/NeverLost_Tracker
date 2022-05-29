@@ -1,10 +1,14 @@
 package com.example.tracker1;
 
 import android.Manifest;
+import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,6 +24,7 @@ import com.example.tracker1.Interface.IFirebaseLoadDone;
 import com.example.tracker1.Interface.IRecyclerItemClickListener;
 import com.example.tracker1.Model.User;
 import com.example.tracker1.Service.MyLocationReceiver;
+import com.example.tracker1.Util.AlarmReceiver;
 import com.example.tracker1.Util.Common;
 import com.example.tracker1.ViewHolder.UserViewHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -31,6 +36,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -55,6 +61,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.mancj.materialsearchbar.MaterialSearchBar;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class HomeActivity extends AppCompatActivity implements IFirebaseLoadDone {
@@ -71,10 +79,32 @@ public class HomeActivity extends AppCompatActivity implements IFirebaseLoadDone
     LocationRequest locationRequest;
     FusedLocationProviderClient fusedLocationProviderClient;
 
+    boolean isNotified = false;
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        createChannel();
+        long currentTime = System.currentTimeMillis();
+        Date date = new Date(currentTime);
+        Calendar calendar = Calendar.getInstance();
+//        calendar.set(Calendar.HOUR_OF_DAY, 15);
+//        calendar.set(Calendar.MINUTE, 05);
+//        calendar.set(Calendar.SECOND, 0);
+        calendar.setTime(date);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        Intent intent1 = new Intent(HomeActivity.this, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(HomeActivity.this, 0,intent1, 0);
+        AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+//        am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+//        am.set(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
+//        if (hour.equals(8) && (calendar.get(Calendar.MINUTE)) > 50 && !isNotified) {
+//            am.set(AlarmManager.RTC_WAKEUP, (System.currentTimeMillis()+5*1000), pendingIntent);
+//            isNotified = true;
+//        }
+        am.set(AlarmManager.RTC_WAKEUP, (System.currentTimeMillis()+5*1000), pendingIntent);
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -358,6 +388,18 @@ public class HomeActivity extends AppCompatActivity implements IFirebaseLoadDone
     @Override
     public void onFirebaseLoadFailed(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void createChannel() {
+        CharSequence name = "goHomeChannel";
+        String description = "Channel for go home reminder";
+        NotificationChannel trckrChannel = new NotificationChannel("notifyHome",
+                name, NotificationManager.IMPORTANCE_DEFAULT);
+        trckrChannel.setDescription(description);
+
+        NotificationManager manager = getSystemService(NotificationManager.class);
+        manager.createNotificationChannel(trckrChannel);
     }
 
     @Override

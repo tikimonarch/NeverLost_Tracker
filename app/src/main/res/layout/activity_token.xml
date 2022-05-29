@@ -4,19 +4,56 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/triangle_button"
     tools:context=".TokenActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingLeft="64dp"
+        android:paddingTop="265dp"
+        android:elevation="4dp"
         android:gravity="center_horizontal">
 
         <ImageView
             android:layout_width="47dp"
             android:layout_height="47dp"
             android:onClick="ClickCall"
-            android:src="@drawable/ic_baseline_phone_24" />
+            android:src="@drawable/ic_baseline_phone_24"
+            android:visibility="visible"
+            tools:visibility="visible" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingRight="100dp"
+        android:paddingTop="350dp"
+        android:elevation="4dp"
+        android:gravity="center_horizontal">
+
+        <ImageView
+            android:layout_width="47dp"
+            android:layout_height="47dp"
+            android:onClick="VoiceNavi"
+            android:src="@drawable/ic_baseline_home_24_token"
+            android:visibility="visible"
+            tools:visibility="visible" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="70dp"
+        android:paddingTop="350dp"
+        android:elevation="4dp"
+        android:gravity="center_horizontal">
+
+        <ImageView
+            android:layout_width="47dp"
+            android:layout_height="47dp"
+            android:onClick="VoiceNaviGTP"
+            android:src="@drawable/ic_baseline_near_me_24"
+            android:visibility="visible"
+            tools:visibility="visible" />
+    </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

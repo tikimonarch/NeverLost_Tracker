@@ -9,15 +9,24 @@ import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.example.tracker1.Model.User;
+import com.example.tracker1.Util.AlarmReceiver;
 import com.firebase.ui.auth.AuthUI;
 import com.example.tracker1.Util.Common;
 import com.firebase.ui.auth.ErrorCodes;
@@ -47,6 +56,7 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 import io.paperdb.Paper;
@@ -124,12 +134,23 @@ public class MainActivity extends AppCompatActivity {
 
             );
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         FirebaseApp.initializeApp(this);
         Paper.init(this);
+
+//        createChannel();
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.set(Calendar.HOUR_OF_DAY, 14);
+//        calendar.set(Calendar.MINUTE, 54);
+//        calendar.set(Calendar.SECOND, 0);
+//        Intent intent1 = new Intent(MainActivity.this, AlarmReceiver.class);
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0,intent1, 0);
+//        AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+//        am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
 
         //Init firebase
         //rebuild if reference is not correct, check google-service
@@ -226,6 +247,18 @@ public class MainActivity extends AppCompatActivity {
         //Nav Home
         startActivity(new Intent(MainActivity.this,HomeActivity.class));
         finish();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void createChannel() {
+        CharSequence name = "goHomeChannel";
+        String description = "Channel for go home reminder";
+        NotificationChannel trckrChannel = new NotificationChannel("notifyHome",
+               name, NotificationManager.IMPORTANCE_DEFAULT);
+        trckrChannel.setDescription(description);
+
+        NotificationManager manager = getSystemService(NotificationManager.class);
+        manager.createNotificationChannel(trckrChannel);
     }
 
     private void updateToken(final FirebaseUser firebaseUser) {
